@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hibachi Airdrop Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0c0a0a;
+      --card:     #131010;
+      --border:   rgba(255,255,255,0.08);
+      --orange:   #f97316;
+      --amber:    #fbbf24;
+      --pink:     #f87171;
+      --muted:    #7a6868;
+      --text:     #f0e8e8;
+      --text-2:   #b09898;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px 40px;
+    }
+
+    /* glow */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -120px; left: 50%;
+      transform: translateX(-50%);
+      width: 1400px; height: 1100px;
+      background: radial-gradient(ellipse at 50% 18%,
+        rgba(200,70,0,0.65) 0%,
+        rgba(160,50,0,0.40) 25%,
+        rgba(100,30,0,0.18) 50%,
+        rgba(50,10,0,0.06) 68%,
+        transparent 80%
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── LOGO ── */
+    .logo-slot {
+      width: 400px;
+      margin-bottom: 24px;
+    }
+    .logo-slot img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ── TITLE ── */
+    .title {
+      text-align: center;
+    }
+    .title h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .title h1 span {
+      background: linear-gradient(90deg, #fbbf24, #f97316, #f87171);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── CARD ── */
+    .card {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* ── FIELD ── */
+    .field { display: flex; flex-direction: column; gap: 8px; }
+
+    .field-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .field-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-2);
+      letter-spacing: 0.2px;
+    }
+
+    .field-value-wrap {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(249,115,22,0.1);
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 2px 10px;
+      gap: 2px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field-value-wrap:focus-within {
+      border-color: rgba(249,115,22,0.5);
+      box-shadow: 0 0 0 3px rgba(249,115,22,0.08);
+      background: rgba(249,115,22,0.14);
+    }
+    .field-value-num {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--orange);
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      text-align: right;
+      width: 48px;
+      -moz-appearance: textfield;
+    }
+    .field-value-num::-webkit-inner-spin-button { display: none; }
+    .field-value-num { appearance: textfield; }
+    .field-value-unit {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--orange);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* number input */
+    .input-box {
+      display: flex;
+      align-items: center;
+      background: #0f0d0d;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .input-box:focus-within {
+      border-color: rgba(249,115,22,0.45);
+      box-shadow: 0 0 0 3px rgba(249,115,22,0.07);
+    }
+    .input-box input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 14px;
+      -moz-appearance: textfield;
+    }
+    .input-box input::-webkit-inner-spin-button { display: none; }
+
+    /* range */
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.08);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fbbf24, #f97316);
+      box-shadow: 0 0 0 3px rgba(249,115,22,0.2);
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      box-shadow: 0 0 0 5px rgba(249,115,22,0.25);
+    }
+
+    .range-hints {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5px;
+      color: var(--muted);
+      margin-top: -4px;
+    }
+
+    .sep {
+      height: 1px;
+      background: var(--border);
+      margin: 2px 0;
+    }
+
+
+    /* ── RESULT ── */
+    .result {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+    }
+
+    .result-row.highlight {
+      background: rgba(249,115,22,0.07);
+      border-color: rgba(249,115,22,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .result-row.highlight::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, #fbbf24, #f97316, #f87171);
+    }
+
+    .result-lbl {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-2);
+    }
+
+    .result-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .result-row.highlight .result-val {
+      font-size: 22px;
+      background: linear-gradient(90deg, #fbbf24, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .disclaimer {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+      padding: 0 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- LOGO -->
+  <div class="logo-slot" id="logoSlot">
+    <img src="logo.png" alt="Hibachi">
+  </div>
+
+  <!-- TITLE -->
+  <div class="title">
+    <h1><span>Airdrop</span> Calculator</h1>
+  </div>
+
+  <div class="card">
+
+    <div class="field">
+      <div class="field-top">
+        <span class="field-label">Amount of Points</span>
+      </div>
+      <div class="input-box">
+        <input type="number" id="userPoints" placeholder="e.g. 50000" min="0" step="1">
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="field">
+      <div class="field-top">
+        <span class="field-label">Total Points Distributed</span>
+        <div class="field-value-wrap">
+          <input class="field-value-num" type="number" id="totalPtsVal" value="65" min="44" max="100" step="0.1">
+          <span class="field-value-unit" id="totalPtsUnit">M</span>
+        </div>
+      </div>
+      <input type="range" id="totalPoints" min="44000000" max="100000000" step="100000" value="65000000">
+      <div class="range-hints"><span>44M</span><span>100M</span></div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="field">
+      <div class="field-top">
+        <span class="field-label">FDV</span>
+        <div class="field-value-wrap">
+          <span class="field-value-unit" style="pointer-events:none;user-select:none">$</span>
+          <input class="field-value-num" type="number" id="fdvVal" value="500" min="50" max="2000" step="10" style="width:52px">
+          <span class="field-value-unit" id="fdvUnit">M</span>
+        </div>
+      </div>
+      <input type="range" id="fdv" min="50000000" max="2000000000" step="10000000" value="500000000">
+      <div class="range-hints"><span>$50M</span><span>$2B</span></div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="field">
+      <div class="field-top">
+        <span class="field-label">Airdrop Percentage</span>
+        <div class="field-value-wrap">
+          <input class="field-value-num" type="number" id="airdropPctVal" value="25" min="0" max="100" step="1" style="width:40px">
+          <span class="field-value-unit">%</span>
+        </div>
+      </div>
+      <input type="range" id="airdropPct" min="0" max="100" step="1" value="25">
+      <div class="range-hints"><span>0%</span><span>100%</span></div>
+    </div>
+
+  </div>
+
+  <div class="result" id="result">
+    <div class="result-row">
+      <span class="result-lbl">Price per Point</span>
+      <span class="result-val" id="rPrice">—</span>
+    </div>
+    <div class="result-row highlight">
+      <span class="result-lbl">Your Airdrop Value</span>
+      <span class="result-val" id="rProfit">—</span>
+    </div>
+  </div>
+
+  <p class="disclaimer">Estimates are illustrative. Actual airdrop depends on final protocol parameters.</p>
+
+</div>
+
+<script>
+  function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+
+  const tpSlider = document.getElementById('totalPoints');
+  const tpInput  = document.getElementById('totalPtsVal');
+
+  tpSlider.addEventListener('input', () => {
+    tpInput.value = (+tpSlider.value / 1e6).toFixed(1).replace(/\.0$/, '');
+    calculate();
+  });
+  tpInput.addEventListener('input', () => {
+    const v = clamp(parseFloat(tpInput.value) * 1e6 || 44e6, 44e6, 100e6);
+    tpSlider.value = v;
+    calculate();
+  });
+
+  const fdvSlider = document.getElementById('fdv');
+  const fdvInput  = document.getElementById('fdvVal');
+  const fdvUnit   = document.getElementById('fdvUnit');
+
+  function fdvSliderToInput() {
+    const v = +fdvSlider.value;
+    if (v >= 1e9) {
+      fdvInput.value = (v / 1e9).toFixed(2).replace(/\.?0+$/, '');
+      fdvUnit.textContent = 'B';
+    } else {
+      fdvInput.value = (v / 1e6).toFixed(0);
+      fdvUnit.textContent = 'M';
+    }
+  }
+
+  fdvSlider.addEventListener('input', () => { fdvSliderToInput(); calculate(); });
+
+  fdvInput.addEventListener('change', () => {
+    const unit = fdvUnit.textContent;
+    const multiplier = unit === 'B' ? 1e9 : 1e6;
+    const v = clamp((parseFloat(fdvInput.value) || 50) * multiplier, 50e6, 2e9);
+    fdvSlider.value = v;
+    if (v >= 1e9) {
+      fdvUnit.textContent = 'B';
+      fdvInput.value = (v / 1e9).toFixed(2).replace(/\.?0+$/, '');
+    } else {
+      fdvUnit.textContent = 'M';
+      fdvInput.value = (v / 1e6).toFixed(0);
+    }
+    calculate();
+  });
+  fdvInput.addEventListener('input', () => {
+    const unit = fdvUnit.textContent;
+    const multiplier = unit === 'B' ? 1e9 : 1e6;
+    const v = clamp((parseFloat(fdvInput.value) || 50) * multiplier, 50e6, 2e9);
+    fdvSlider.value = v;
+    calculate();
+  });
+
+  const apSlider = document.getElementById('airdropPct');
+  const apInput  = document.getElementById('airdropPctVal');
+
+  apSlider.addEventListener('input', () => {
+    apInput.value = (+apSlider.value).toFixed(1).replace(/\.0$/, '');
+    calculate();
+  });
+  apInput.addEventListener('input', () => {
+    const v = clamp(parseFloat(apInput.value) || 0, 0, 100);
+    apSlider.value = v;
+    calculate();
+  });
+
+  document.getElementById('userPoints').addEventListener('input', calculate);
+
+  function calculate() {
+    const userPts    = parseFloat(document.getElementById('userPoints').value) || 0;
+    const totalPts   = +document.getElementById('totalPoints').value;
+    const fdv        = +document.getElementById('fdv').value;
+    const airdropPct = +document.getElementById('airdropPct').value / 100;
+
+    if (totalPts === 0) return;
+
+    const pricePerToken = (fdv * airdropPct) / totalPts;
+    const profit        = pricePerToken * userPts;
+
+    function fmtUSD(n) {
+      if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+      if (n >= 1e3) return '$' + (n / 1e3).toFixed(2) + 'K';
+      return '$' + n.toFixed(2);
+    }
+
+    document.getElementById('rPrice').textContent  = '$' + pricePerToken.toFixed(3);
+    document.getElementById('rProfit').textContent = fmtUSD(profit);
+    document.getElementById('result').classList.add('visible');
+  }
+
+  calculate();
+</script>
+</body>
+</html>
