@@ -4,8 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hibachi Airdrop Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Thin.ttf'); font-weight: 100; font-style: normal; }
+    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Light.ttf'); font-weight: 300; font-style: normal; }
+    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Regular.ttf'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Medium.ttf'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Semibold.ttf'); font-weight: 600; font-style: normal; }
+    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Bold.ttf'); font-weight: 700; font-style: normal; }
+    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Black.ttf'); font-weight: 800; font-style: normal; }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -22,7 +29,7 @@
 
     body {
       background: var(--bg);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Farabee', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -280,6 +287,22 @@
       line-height: 1.6;
       padding: 0 8px;
     }
+
+    .social-links {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 4px;
+    }
+    .social-links a {
+      font-size: 15px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .social-links a:hover {
+      color: var(--orange);
+    }
   </style>
 </head>
 <body>
@@ -302,7 +325,7 @@
         <span class="field-label">Amount of Points</span>
       </div>
       <div class="input-box">
-        <input type="number" id="userPoints" placeholder="e.g. 50000" min="0" step="1">
+        <input type="number" id="userPoints" placeholder="ex. 50000" min="0" step="1">
       </div>
     </div>
 
@@ -362,7 +385,10 @@
     </div>
   </div>
 
-  <p class="disclaimer">Estimates are illustrative. Actual airdrop depends on final protocol parameters.</p>
+  <div class="social-links">
+    <span style="font-size:15px;color:var(--muted)">made by</span>
+    <a href="https://x.com/dimoflexx" target="_blank">dimaflexx</a>
+  </div>
 
 </div>
 
