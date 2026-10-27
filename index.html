@@ -5,16 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hibachi Airdrop Calculator</title>
   <link rel="icon" type="image/png" href="favico.png?v=2">
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap">
   <style>
-    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Thin.ttf'); font-weight: 100; font-style: normal; }
-    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Light.ttf'); font-weight: 300; font-style: normal; }
-    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Regular.ttf'); font-weight: 400; font-style: normal; }
-    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Medium.ttf'); font-weight: 500; font-style: normal; }
-    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Semibold.ttf'); font-weight: 600; font-style: normal; }
-    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Bold.ttf'); font-weight: 700; font-style: normal; }
-    @font-face { font-family: 'Farabee'; src: url('Farabee/Farabee Black.ttf'); font-weight: 800; font-style: normal; }
+    @font-face { font-family: 'Satoshi'; src: url('Satoshi-Black.woff2') format('woff2'); font-weight: 800 900; font-style: normal; font-display: swap; }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    input { line-height: inherit; }
 
     :root {
       --bg:       #08080c;
@@ -29,7 +25,8 @@
 
     body {
       background: linear-gradient(180deg, #08080c 0%, #1c1d2e 100%) fixed var(--bg);
-      font-family: 'Farabee', sans-serif;
+      font-family: 'Satoshi', sans-serif;
+      line-height: 1.2;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -104,7 +101,7 @@
       padding: 28px;
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 18px;
     }
 
     /* ── FIELD ── */
@@ -399,11 +396,11 @@
         <span class="field-label">FDV</span>
         <div class="field-value-wrap">
           <span class="field-value-unit" style="pointer-events:none;user-select:none">$</span>
-          <input class="field-value-num" type="number" id="fdvVal" value="500" min="10" max="2000" step="10" style="width:52px">
+          <input class="field-value-num" type="number" id="fdvVal" value="200" min="10" max="2000" step="10" style="width:52px">
           <span class="field-value-unit" id="fdvUnit">M</span>
         </div>
       </div>
-      <input type="range" id="fdv" min="10000000" max="2000000000" step="10000000" value="500000000">
+      <input type="range" id="fdv" min="10000000" max="2000000000" step="10000000" value="200000000">
       <div class="range-hints"><span>$10M</span><span>$2B</span></div>
     </div>
 
@@ -413,11 +410,11 @@
       <div class="field-top">
         <span class="field-label">Airdrop Percentage</span>
         <div class="field-value-wrap">
-          <input class="field-value-num" type="number" id="airdropPctVal" value="25" min="0" max="100" step="1" style="width:40px">
+          <input class="field-value-num" type="number" id="airdropPctVal" value="20" min="0" max="100" step="1" style="width:40px">
           <span class="field-value-unit">%</span>
         </div>
       </div>
-      <input type="range" id="airdropPct" min="0" max="100" step="1" value="25">
+      <input type="range" id="airdropPct" min="0" max="100" step="1" value="20">
       <div class="range-hints"><span>0%</span><span>100%</span></div>
     </div>
 
