@@ -221,6 +221,22 @@
       margin-top: -4px;
     }
 
+    input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
+    input[type="range"]:disabled::-webkit-slider-thumb { cursor: not-allowed; }
+    .field-value-num:disabled { opacity: 0.6; }
+
+    .custom-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+      width: fit-content;
+    }
+    .custom-toggle input { accent-color: var(--orange); cursor: pointer; }
+
     .sep {
       height: 1px;
       background: var(--border);
@@ -336,11 +352,12 @@
       <div class="field-top">
         <span class="field-label">Total Points Distributed</span>
         <div class="field-value-wrap">
-          <input class="field-value-num" type="number" id="totalPtsVal" value="65" min="44" max="100" step="0.1">
+          <input class="field-value-num" type="number" id="totalPtsVal" value="80.5" min="44" max="100" step="0.1" disabled>
           <span class="field-value-unit" id="totalPtsUnit">M</span>
         </div>
       </div>
-      <input type="range" id="totalPoints" min="44000000" max="100000000" step="100000" value="65000000">
+      <label class="custom-toggle"><input type="checkbox" id="tpCustom"> Set manually</label>
+      <input type="range" id="totalPoints" min="44000000" max="100000000" step="100000" value="80500000" disabled>
       <div class="range-hints"><span>44M</span><span>100M</span></div>
     </div>
 
@@ -351,12 +368,12 @@
         <span class="field-label">FDV</span>
         <div class="field-value-wrap">
           <span class="field-value-unit" style="pointer-events:none;user-select:none">$</span>
-          <input class="field-value-num" type="number" id="fdvVal" value="500" min="50" max="2000" step="10" style="width:52px">
+          <input class="field-value-num" type="number" id="fdvVal" value="500" min="10" max="2000" step="10" style="width:52px">
           <span class="field-value-unit" id="fdvUnit">M</span>
         </div>
       </div>
-      <input type="range" id="fdv" min="50000000" max="2000000000" step="10000000" value="500000000">
-      <div class="range-hints"><span>$50M</span><span>$2B</span></div>
+      <input type="range" id="fdv" min="10000000" max="2000000000" step="10000000" value="500000000">
+      <div class="range-hints"><span>$10M</span><span>$2B</span></div>
     </div>
 
     <div class="sep"></div>
@@ -409,6 +426,20 @@
     calculate();
   });
 
+  const TP_FIXED = 80.5e6;
+  const tpCustom = document.getElementById('tpCustom');
+
+  tpCustom.addEventListener('change', () => {
+    const manual = tpCustom.checked;
+    tpSlider.disabled = !manual;
+    tpInput.disabled  = !manual;
+    if (!manual) {
+      tpSlider.value = TP_FIXED;
+      tpInput.value  = (TP_FIXED / 1e6).toString();
+    }
+    calculate();
+  });
+
   const fdvSlider = document.getElementById('fdv');
   const fdvInput  = document.getElementById('fdvVal');
   const fdvUnit   = document.getElementById('fdvUnit');
@@ -429,7 +460,7 @@
   fdvInput.addEventListener('change', () => {
     const unit = fdvUnit.textContent;
     const multiplier = unit === 'B' ? 1e9 : 1e6;
-    const v = clamp((parseFloat(fdvInput.value) || 50) * multiplier, 50e6, 2e9);
+    const v = clamp((parseFloat(fdvInput.value) || 10) * multiplier, 10e6, 2e9);
     fdvSlider.value = v;
     if (v >= 1e9) {
       fdvUnit.textContent = 'B';
@@ -443,7 +474,7 @@
   fdvInput.addEventListener('input', () => {
     const unit = fdvUnit.textContent;
     const multiplier = unit === 'B' ? 1e9 : 1e6;
-    const v = clamp((parseFloat(fdvInput.value) || 50) * multiplier, 50e6, 2e9);
+    const v = clamp((parseFloat(fdvInput.value) || 10) * multiplier, 10e6, 2e9);
     fdvSlider.value = v;
     calculate();
   });
